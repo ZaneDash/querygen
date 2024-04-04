@@ -1,0 +1,1 @@
+This project leverages a fine-tuned pretrained BART transformer to generate SQL queries from flight searches. Flights can be specified based on the criteria defined in the ATIS dataset, with schema [linked here](https://github.com/jkkummerfeld/text2sql-data/blob/master/data/atis-schema.csv). React and Flask are used as the frontend and backend.
