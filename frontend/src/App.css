@@ -1,0 +1,70 @@
+.App {
+  text-align: center;
+  max-width: 600px;
+  margin: auto;
+  padding: 20px;
+}
+
+.form {
+  margin-bottom: 20px;
+}
+
+.input, .button {
+  padding: 10px;
+  margin: 5px;
+  font-size: 16px;
+}
+
+.button {
+  color: white;
+  background-color: #007bff;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.button:hover {
+  background-color: #0056b3;
+}
+
+.button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.error {
+  color: red;
+}
+
+.result {
+  color: #333;
+  background-color: #f0f0f0;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.textarea {
+  width: 100%;
+  min-height: 50px;
+  overflow-y: hidden; 
+  resize: none;
+  margin: 5px 0; 
+  padding: 10px;
+}
+
+.sql-result-textarea {
+  width: 100%;
+  min-height: 100px;
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-family: monospace;
+  resize: none; 
+  overflow-y: hidden; 
+  box-sizing: border-box;
+}
+
+
+
