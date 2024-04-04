@@ -1,0 +1,7 @@
+nltk
+cryptography
+torchtext
+torch
+func_timeout
+transformers
+wget
