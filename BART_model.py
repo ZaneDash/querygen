@@ -1,6 +1,9 @@
 import torch
 import torch.nn as nn
 from transformers import BartTokenizer, BartForConditionalGeneration
+import math
+import copy
+from tqdm import tqdm
 
 bart_tokenizer = BartTokenizer.from_pretrained('facebook/bart-base')
 device = torch.device("cpu")
@@ -22,10 +25,9 @@ class BART(nn.Module):
     # Get special word ids
     self.padding_id_tgt = tokenizer.pad_token_id
 
-    # Create essential modules
-    self.bart = pretrained_bart
+    self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    self.bart = pretrained_bart.to(self.device)
 
-    # Create loss function
     self.loss_function = nn.CrossEntropyLoss(reduction="sum",
                                              ignore_index=self.padding_id_tgt)
 
@@ -39,8 +41,7 @@ class BART(nn.Module):
     """
     # BART assumes inputs to be batch-first
     # This single function is forwarding both encoder and decoder (w/ cross attn),
-    # using `input_ids` as encoder inputs, and `decoder_input_ids`
-    # as decoder inputs.
+    # using `input_ids` as encoder inputs, and `decoder_input_ids` as decoder inputs.
     logits = self.bart(input_ids=src,
                        decoder_input_ids=tgt_in,
                        use_cache=False
@@ -56,8 +57,8 @@ class BART(nn.Module):
       # Input and target
       src = batch['src_ids']              # bsz, max_src_len
       src_lengths = batch['src_lengths']  # bsz
-      tgt_in = batch['tgt_ids'][:, :-1]   # Remove <eos> for decode input (y_0=<bos>, y_1, y_2)
-      tgt_out = batch['tgt_ids'][:, 1:]   # Remove <bos> as target        (y_1, y_2, y_3=<eos>)
+      tgt_in = batch['tgt_ids'][:, :-1]   # Remove <eos> for decode input
+      tgt_out = batch['tgt_ids'][:, 1:]   # Remove <bos> as target        
       # Forward to get logits
       logits = self.forward(src, src_lengths, tgt_in) # bsz, tgt_len, V_tgt
       # Compute cross entropy loss
@@ -89,13 +90,13 @@ class BART(nn.Module):
         # Zero the parameter gradients
         self.zero_grad()
         # Input and target
-        tgt = batch['tgt_ids']              # bsz, max_tgt_len
+        tgt = batch['tgt_ids']              
         src = batch['src_ids']              # bsz, max_src_len
         src_lengths = batch['src_lengths']  # bsz
-        tgt_in = tgt[:, :-1].contiguous()   # Remove <eos> for decode input (y_0=<bos>, y_1, y_2)
-        tgt_out = tgt[:, 1:].contiguous()   # Remove <bos> as target        (y_1, y_2, y_3=<eos>)
+        tgt_in = tgt[:, :-1].contiguous()   # Remove <eos> for decode input
+        tgt_out = tgt[:, 1:].contiguous()   # Remove <bos> as target       
         bsz = tgt.size(0)
-        # Run forward pass and compute loss along the way.
+        # Run forward pass and compute loss
         logits = self.forward(src, src_lengths, tgt_in)
         loss = self.loss_function(logits.view(-1, self.V_tgt), tgt_out.view(-1))
         # Training stats
