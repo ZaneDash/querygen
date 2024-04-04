@@ -1,3 +1,3 @@
-# Start the React frontend with `npm start`.
+Start the React frontend with `npm start`.
 
-# Build for production with `npm run build`.
+Build for production with `npm run build`.
