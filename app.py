@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 import torch
-from BART_model import BART  # Ensure this imports your model class
+from BART_model import BART
 from transformers import BartTokenizer, BartForConditionalGeneration
 import os
 from flask_cors import CORS
