@@ -4,5 +4,3 @@ To open the project, install all required packages with `pip install -r requirem
 
 Work used to develop the model deployed in this project, as well as preliminary manually-implemented models, is in the modelDevelopment.ipynb file in the folder modelDevelopment.
 
-
-
